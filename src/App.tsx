@@ -45,8 +45,22 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-white font-sans selection:bg-orange-500/30">
-      {/* Header */}
+    <div className="relative min-h-screen bg-[#0a0a0a] text-white font-sans selection:bg-orange-500/30 overflow-x-hidden">
+      {/* Background Image with Referrer Policy Fix */}
+      <div 
+        className="fixed inset-0 z-0 bg-[#0a0a0a]"
+        style={{
+          backgroundImage: `linear-gradient(rgba(10, 10, 10, 0.5), rgba(10, 10, 10, 0.8)), url('https://raw.githubusercontent.com/marciohmc/SoulServer/main/img/SouServer-bg.jpg')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        <div className="absolute inset-0 backdrop-blur-[2px]" />
+      </div>
+
+      <div className="relative z-10">
+        {/* Header */}
       <header className="border-b border-white/10 p-6 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <div className="bg-orange-500 p-2 rounded-lg">
@@ -170,6 +184,7 @@ export default function App() {
           Brain Infrastructure &copy; 2026 // Built with Express + Vite
         </div>
       </footer>
+      </div>
     </div>
   );
 }

@@ -30,6 +30,23 @@ async function startServer() {
     apiKey: process.env.GEMINI_API_KEY || "",
   });
 
+  // Database Initialization
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS feedback (
+        id SERIAL PRIMARY KEY,
+        prompt TEXT,
+        response TEXT,
+        rating INTEGER,
+        comment TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+    console.log("Feedback table ready");
+  } catch (err) {
+    console.error("Failed to initialize database:", err);
+  }
+
   app.use(express.json());
 
   // API Routes
@@ -66,6 +83,28 @@ async function startServer() {
     } catch (error) {
       console.error("Database Error:", error);
       res.status(500).json({ error: "Database connection failed" });
+    }
+  });
+
+  // Feedback Endpoint
+  app.post("/api/feedback", async (req, res) => {
+    try {
+      const { prompt, response, rating, comment } = z.object({
+        prompt: z.string(),
+        response: z.string(),
+        rating: z.number().min(1).max(5),
+        comment: z.string().optional(),
+      }).parse(req.body);
+
+      await pool.query(
+        "INSERT INTO feedback (prompt, response, rating, comment) VALUES ($1, $2, $3, $4)",
+        [prompt, response, rating, comment]
+      );
+
+      res.json({ status: "success", message: "Feedback received" });
+    } catch (error) {
+      console.error("Feedback Error:", error);
+      res.status(500).json({ error: "Failed to save feedback" });
     }
   });
 

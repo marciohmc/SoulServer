@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Brain, Database, Zap, Sparkles, Activity } from "lucide-react";
+import { Brain, Database, Zap, Sparkles, Activity, Star, MessageSquare, Send } from "lucide-react";
 import { motion } from "motion/react";
 
 export default function App() {
@@ -8,6 +8,10 @@ export default function App() {
   const [prompt, setPrompt] = useState("");
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+  const [feedbackLoading, setFeedbackLoading] = useState(false);
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
 
   const [bgUrl, setBgUrl] = useState("/soulserver-bg.jpg");
 
@@ -40,6 +44,9 @@ export default function App() {
   const generate = async () => {
     if (!prompt) return;
     setLoading(true);
+    setFeedbackSubmitted(false);
+    setRating(0);
+    setComment("");
     try {
       const res = await fetch("/api/generate", {
         method: "POST",
@@ -52,6 +59,23 @@ export default function App() {
       setResponse("Generation failed");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const submitFeedback = async () => {
+    if (rating === 0) return;
+    setFeedbackLoading(true);
+    try {
+      await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt, response, rating, comment }),
+      });
+      setFeedbackSubmitted(true);
+    } catch (err) {
+      console.error("Feedback failed");
+    } finally {
+      setFeedbackLoading(false);
     }
   };
 
@@ -188,6 +212,67 @@ export default function App() {
                 className="mt-4 p-6 bg-black/60 border border-white/5 rounded-2xl text-sm text-white/80 leading-relaxed font-mono whitespace-pre-wrap"
               >
                 {response}
+              </motion.div>
+            )}
+
+            {response && !feedbackSubmitted && (
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-6 p-6 bg-white/5 border border-white/10 rounded-2xl"
+              >
+                <h4 className="text-xs font-bold uppercase tracking-widest text-white/60 mb-4 flex items-center gap-2">
+                  <MessageSquare className="w-3 h-3" />
+                  Rate this response
+                </h4>
+                
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        onClick={() => setRating(star)}
+                        className={`transition-all ${rating >= star ? 'text-orange-500 scale-110' : 'text-white/20 hover:text-white/40'}`}
+                      >
+                        <Star className={`w-6 h-6 ${rating >= star ? 'fill-current' : ''}`} />
+                      </button>
+                    ))}
+                  </div>
+
+                  <textarea
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder="Any additional comments? (Optional)"
+                    className="bg-black/40 border border-white/10 rounded-xl p-3 text-xs focus:outline-none focus:border-orange-500/50 min-h-[60px] resize-none"
+                  />
+
+                  <button
+                    onClick={submitFeedback}
+                    disabled={rating === 0 || feedbackLoading}
+                    className="bg-white/10 hover:bg-white/20 text-white text-[10px] font-bold uppercase py-2 px-4 rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  >
+                    {feedbackLoading ? (
+                      <div className="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      <>
+                        <Send className="w-3 h-3" />
+                        Submit Feedback
+                      </>
+                    )}
+                  </button>
+                </div>
+              </motion.div>
+            )}
+
+            {feedbackSubmitted && (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="mt-6 p-4 bg-green-500/10 border border-green-500/20 rounded-xl text-center"
+              >
+                <p className="text-green-400 text-xs font-bold uppercase tracking-widest">
+                  Thank you for your feedback!
+                </p>
               </motion.div>
             )}
           </div>

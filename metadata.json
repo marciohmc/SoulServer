@@ -1,0 +1,5 @@
+{
+  "name": "Brain",
+  "description": "A high-performance web server infrastructure integrated with Gemini AI and PostgreSQL.",
+  "requestFramePermissions": []
+}

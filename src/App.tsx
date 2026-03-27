@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Brain, Database, Zap, Sparkles, Activity } from "lucide-react";
 import { motion } from "motion/react";
-import bgImage from "./assets/soulserver-bg.jpg";
 
 export default function App() {
   const [health, setHealth] = useState<any>(null);
@@ -51,7 +50,7 @@ export default function App() {
       <div 
         className="fixed inset-0 z-0 bg-[#0a0a0a]"
         style={{
-          backgroundImage: `linear-gradient(rgba(10, 10, 10, 0.5), rgba(10, 10, 10, 0.8)), url('${bgImage}')`,
+          backgroundImage: `linear-gradient(rgba(10, 10, 10, 0.5), rgba(10, 10, 10, 0.8)), url('/Img/soulserver-bg.jpg')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',

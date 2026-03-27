@@ -50,7 +50,7 @@ export default function App() {
       <div 
         className="fixed inset-0 z-0 bg-[#0a0a0a]"
         style={{
-          backgroundImage: `linear-gradient(rgba(10, 10, 10, 0.5), rgba(10, 10, 10, 0.8)), url('/Img/soulserver-bg.jpg')`,
+          backgroundImage: `linear-gradient(rgba(10, 10, 10, 0.5), rgba(10, 10, 10, 0.8)), url('/soulserver-bg.jpg'), url('https://raw.githubusercontent.com/marciohmc/SoulServer/refs/heads/main/img/soulserver-bg.jpg')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',

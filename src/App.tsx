@@ -9,6 +9,17 @@ export default function App() {
   const [response, setResponse] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [bgUrl, setBgUrl] = useState("/soulserver-bg.jpg");
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = "/soulserver-bg.jpg";
+    img.onerror = () => {
+      console.warn("Local background image failed to load, switching to GitHub fallback.");
+      setBgUrl("https://raw.githubusercontent.com/marciohmc/SoulServer/refs/heads/main/img/soulserver-bg.jpg");
+    };
+  }, []);
+
   useEffect(() => {
     fetch("/api/health")
       .then((res) => res.json())
@@ -52,8 +63,7 @@ export default function App() {
         style={{
           backgroundImage: `
             linear-gradient(rgba(10, 10, 10, 0.5), rgba(10, 10, 10, 0.8)), 
-            url('/soulserver-bg.jpg?v=1.0.2'), 
-            url('https://raw.githubusercontent.com/marciohmc/SoulServer/refs/heads/main/img/soulserver-bg.jpg')
+            url('${bgUrl}')
           `,
           backgroundSize: 'cover',
           backgroundPosition: 'center',

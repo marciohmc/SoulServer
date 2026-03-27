@@ -77,8 +77,16 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    const distPath = path.join(process.cwd(), "dist");
+    const distPath = path.resolve(__dirname, "dist");
     app.use(express.static(distPath));
+    
+    // Ensure static files that are not found don't return index.html
+    app.get("/soulserver-bg.jpg", (req, res) => {
+      res.sendFile(path.join(distPath, "soulserver-bg.jpg"), (err) => {
+        if (err) res.status(404).end();
+      });
+    });
+
     app.get("*", (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
     });

@@ -46,14 +46,19 @@ export default function App() {
 
   return (
     <div className="relative min-h-screen bg-[#0a0a0a] text-white font-sans selection:bg-orange-500/30 overflow-x-hidden">
-      {/* Background Image with Referrer Policy Fix */}
+      {/* Background Image with Robust Fallback */}
       <div 
         className="fixed inset-0 z-0 bg-[#0a0a0a]"
         style={{
-          backgroundImage: `linear-gradient(rgba(10, 10, 10, 0.5), rgba(10, 10, 10, 0.8)), url('/soulserver-bg.jpg'), url('https://raw.githubusercontent.com/marciohmc/SoulServer/refs/heads/main/img/soulserver-bg.jpg')`,
+          backgroundImage: `
+            linear-gradient(rgba(10, 10, 10, 0.5), rgba(10, 10, 10, 0.8)), 
+            url('/soulserver-bg.jpg?v=1.0.2'), 
+            url('https://raw.githubusercontent.com/marciohmc/SoulServer/refs/heads/main/img/soulserver-bg.jpg')
+          `,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
+          backgroundColor: '#0a0a0a'
         }}
       >
         <div className="absolute inset-0 backdrop-blur-[2px]" />
